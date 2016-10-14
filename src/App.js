@@ -3,46 +3,54 @@ import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
-  handleNewString(e, inputId){
+  constructor(props) {
+    super(props);
+    this.state = {
+      anagram: false,
+      input1: "",
+      input2: ""
+    };
+  }
+  handleNewString(inputId, e){
     // TODO: Edit state
-    console.log(e.target.value);
-    console.log(inputId);
     let update = {};
     update[inputId] = e.target.value;
-    /**
-    this.setState(update, () => {
-      console.log("State is now: ", this.state);
-    });
-    **/
-    // TODO: Feed new state info as callback to isAnagram.
-    // TODO: Set result of isAnagram in state.
+    this.setState(update, this.isAnagram);
   }
-  isAnagram(string1, string2) {
-    const sortedString1 = this.removePunctuation(string1)
+  isAnagram() {
+    console.log("isAnagram called for state: ", this.state);
+    const sortedString1 = this.removePunctuation(this.state.input1)
                               .split("")
                               .sort()
                               .toString();
-    const sortedString2 = this.removePunctuation(string2)
+    const sortedString2 = this.removePunctuation(this.state.input2)
                               .split("")
                               .sort()
                               .toString();
-    return sortedString1 === sortedString2;
+    this.setState({
+      anagram: sortedString1 === sortedString2
+    });
   }
   // Taken from http://stackoverflow.com/questions/4328500/how-can-i-strip-all-punctuation-from-a-string-in-javascript-using-regex
   removePunctuation(s){
     return s.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
   }
   render() {
-    // TODO: Handle Binding properly.
+    if(this.state.anagram){
+      console.log("BOOM! ANAGRAM.");
+    }
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
+        {this.state.anagram ? <b>ANAGRAM.</b> : <p>Not an anagram.</p>}
         <p className="App-intro">
-          <input type="text" onChange={this.handleNewString.bind("input1")} />
-          <input type="text" onChange={this.handleNewString.bind("input2")} />
+          <input
+              type="text"
+              onChange={this.handleNewString.bind(this, "input1")}
+          />
+          <input
+              type="text"
+              onChange={this.handleNewString.bind(this, "input2")}
+          />
         </p>
       </div>
     );
